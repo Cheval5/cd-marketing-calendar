@@ -41,6 +41,16 @@
   .task-card.dragging { opacity: 0.4; transform: scale(0.95); }
   .task-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .task-card .actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .task-card.just-saved {
+    animation: taskSavedPulse 1.6s ease;
+    box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.45), 0 0 0 8px rgba(255, 107, 53, 0.08);
+  }
+
+  @keyframes taskSavedPulse {
+    0% { transform: translateY(-1px) scale(0.98); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.24); }
+    35% { transform: translateY(-2px) scale(1.01); box-shadow: 0 0 0 8px rgba(255, 107, 53, 0.14); }
+    100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+  }
 
   .color-dot { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; }
   .color-dot:hover, .color-dot.active { border-color: #333; }
@@ -93,6 +103,7 @@
      <h1 id="calTitle" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #FF6B35;"></h1>
      <p id="taskCount" style="color: #8a8f9e; font-size: 14px; margin-top: 4px;">0 campaigns</p>
      <p style="color: #5f677c; font-size: 12px; margin-top: 4px;">Stored in this browser with localStorage</p>
+     <p id="lastSavedNote" style="color: #5f677c; font-size: 12px; margin-top: 4px;">Not saved yet</p>
     </div>
     <div style="display: flex; gap: 8px;"><button id="copyBtn" onclick="copyCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #4ECDC4; color: #fff; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
       <svg data-lucide="copy" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
@@ -108,12 +119,15 @@
   <input id="importFile" type="file" accept=".csv,text/csv" onchange="importCalendar(event)" hidden>
   <div class="edit-overlay" id="editOverlay">
    <div class="edit-modal" style="background: #1a1d27; max-width: 500px; max-height: 90vh; overflow-y: auto;">
-    <h3 style="color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Edit Campaign</h3>
+   <h3 style="color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Edit Campaign</h3>
+    <div style="margin-bottom: 12px;">
+     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Month</label> <select id="editMonth" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;"></select>
+    </div>
     <div style="margin-bottom: 12px;">
      <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Date</label> <input id="editDate" type="date" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;accent-color:#FF6B35;color-scheme:dark;" placeholder="YYYY-MM-DD">
     </div>
     <div style="margin-bottom: 12px;">
-     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Name</label> <input id="editName" type="text" placeholder="Campaign name" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Name</label> <input id="editName" type="text" placeholder="Summer promo" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
     </div>
     <div style="margin-bottom: 12px;">
      <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Products</label> <textarea id="editProducts" rows="2" placeholder="List products" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;resize:none;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;"></textarea>
@@ -176,6 +190,7 @@
   <div class="toast-msg" id="toast" style="background:#FF6B35;color:#fff;"></div>
   <script>
 const STORAGE_KEY = 'marketing-calendar.tasks.v2';
+const LAST_SAVED_KEY = 'marketing-calendar.last-saved.v2';
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const COLORS = ['#FF6B35','#4ECDC4','#A78BFA','#F59E0B','#EC4899','#34D399'];
 
@@ -195,6 +210,19 @@ let editingTask = null;
 let editColor = COLORS[0];
 let dragId = null;
 let deleteConfirmId = null;
+let pendingHighlightId = null;
+
+function formatSavedTime(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Not saved yet';
+  return `Last saved locally at ${date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
+}
+
+function setLastSavedNote(value) {
+  const note = document.getElementById('lastSavedNote');
+  if (!note) return;
+  note.textContent = value ? formatSavedTime(value) : 'Not saved yet';
+}
 
 function generateId() {
   if (window.crypto && typeof window.crypto.randomUUID === 'function') {
@@ -254,6 +282,9 @@ function loadTasksFromStorage() {
 function persistTasks() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
+    const savedAt = new Date().toISOString();
+    localStorage.setItem(LAST_SAVED_KEY, savedAt);
+    setLastSavedNote(savedAt);
     return true;
   } catch (error) {
     console.error('Failed to save local calendar data:', error);
@@ -291,6 +322,23 @@ function nextOrder(month) {
   return Math.max(...monthTasks.map(task => Number(task.order) || 0)) + 1;
 }
 
+function initEditMonthOptions() {
+  const select = document.getElementById('editMonth');
+  select.innerHTML = MONTHS.map((month, index) => `<option value="${index}">${month}</option>`).join('');
+}
+
+function flashSavedTask(taskId) {
+  pendingHighlightId = taskId;
+  renderTasks();
+  setTimeout(() => {
+    if (pendingHighlightId === taskId) {
+      pendingHighlightId = null;
+      const card = document.querySelector(`.task-card[data-id="${taskId}"]`);
+      if (card) card.classList.remove('just-saved');
+    }
+  }, 1700);
+}
+
 // Build month grid
 function buildGrid() {
   const grid = document.getElementById('monthGrid');
@@ -326,20 +374,17 @@ function buildGrid() {
 
 async function addTask(month) {
   if (allTasks.length >= 999) { showToast('Task limit reached (999)'); return; }
-  const btn = document.querySelector(`.add-btn[data-month="${month}"]`);
-  btn.disabled = true; btn.textContent = '...';
-  const task = upsertTask({
+  const task = {
     __backendId: generateId(),
-    month,
+    month: normalizeMonthValue(month),
     order: nextOrder(month),
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
     date: '',
-    name: 'Campaign',
-    text: 'Campaign',
+    name: '',
+    text: '',
     products: '',
     notes: ''
-  });
-  btn.disabled = false; btn.textContent = '+ Add Campaign';
+  };
   openEdit(task);
 }
 
@@ -356,8 +401,11 @@ function renderTasks() {
         const el = existing.get(t.__backendId);
         el.querySelector('.task-text').textContent = t.text;
         el.style.borderLeft = `4px solid ${t.color || COLORS[0]}`;
+        el.classList.toggle('just-saved', pendingHighlightId === t.__backendId);
       } else {
-        list.appendChild(createCard(t));
+        const card = createCard(t);
+        if (pendingHighlightId === t.__backendId) card.classList.add('just-saved');
+        list.appendChild(card);
       }
     });
     existing.forEach((el, id) => { if (!seen.has(id)) el.remove(); });
@@ -425,6 +473,7 @@ function openEdit(t) {
   editColor = t.color || COLORS[0];
   
   // Ensure all values are strings and not undefined
+  document.getElementById('editMonth').value = String(normalizeMonthValue(t.month));
   document.getElementById('editDate').value = t.date ? String(t.date) : '';
   document.getElementById('editName').value = t.name ? String(t.name) : '';
   document.getElementById('editProducts').value = t.products ? String(t.products) : '';
@@ -433,9 +482,10 @@ function openEdit(t) {
   renderEditColors();
   document.getElementById('editOverlay').classList.add('open');
   
-  // Force focus to ensure fields are visible
+  // Focus the name field so new campaigns are faster to add.
   setTimeout(() => {
-    document.getElementById('editDate').focus();
+    document.getElementById('editName').focus();
+    document.getElementById('editName').select();
   }, 50);
 }
 
@@ -457,15 +507,12 @@ function closeEdit() {
 }
 
 function openView(t) {
-  document.getElementById('viewDate').textContent = t.date && String(t.date).trim() ? String(t.date) : '—';
-  document.getElementById('viewName').textContent = t.name && String(t.name).trim() ? String(t.name) : '—';
-  document.getElementById('viewProducts').textContent = t.products && String(t.products).trim() ? String(t.products) : '—';
-  document.getElementById('viewNotes').textContent = t.notes && String(t.notes).trim() ? String(t.notes) : '—';
+  document.getElementById('viewDate').textContent = t.date && String(t.date).trim() ? String(t.date) : '-';
+  document.getElementById('viewName').textContent = t.name && String(t.name).trim() ? String(t.name) : '-';
+  document.getElementById('viewProducts').textContent = t.products && String(t.products).trim() ? String(t.products) : '-';
+  document.getElementById('viewNotes').textContent = t.notes && String(t.notes).trim() ? String(t.notes) : '-';
   document.getElementById('viewColor').style.background = t.color || COLORS[0];
   document.getElementById('viewOverlay').classList.add('open');
-  
-  // Debug: log the task data
-  console.log('Viewing task:', t);
 }
 
 function closeView() {
@@ -474,6 +521,7 @@ function closeView() {
 
 async function saveEdit() {
   if (!editingTask) return;
+  const month = parseInt(document.getElementById('editMonth').value, 10) || 0;
   const date = document.getElementById('editDate').value || '';
   const name = document.getElementById('editName').value.trim() || 'Untitled';
   const products = document.getElementById('editProducts').value.trim() || '';
@@ -481,8 +529,9 @@ async function saveEdit() {
   const btn = document.querySelector('.edit-modal button:last-child');
   btn.disabled = true; btn.textContent = '...';
   btn.disabled = false; btn.textContent = 'Save';
-  editingTask = upsertTask({ ...editingTask, text: name, date, name, products, notes, color: editColor });
+  editingTask = upsertTask({ ...editingTask, month, text: name, date, name, products, notes, color: editColor });
   closeEdit();
+  flashSavedTask(editingTask.__backendId);
   showToast('Campaign saved!');
 }
 
@@ -656,6 +705,8 @@ function applyConfig(config) {
 
 (async () => {
   buildGrid();
+  initEditMonthOptions();
+  setLastSavedNote(localStorage.getItem(LAST_SAVED_KEY));
   applyConfig(defaultConfig);
   refreshTasks(loadTasksFromStorage());
   lucide.createIcons();
