@@ -23,6 +23,331 @@
   @media (max-width: 1024px) { .month-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 768px) { .month-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px) { .month-grid { grid-template-columns: 1fr; } }
+  .app-header {
+    padding: 24px 32px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    border-bottom: 4px solid #25A046;
+    background: #FFFFFF;
+  }
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+  }
+  .brand-logo {
+    width: min(260px, 28vw);
+    height: auto;
+    display: block;
+    flex: 0 0 auto;
+  }
+  .brand-title-block { min-width: 220px; }
+  @media (max-width: 900px) {
+    .app-header { flex-direction: column; align-items: stretch; }
+    .brand-lockup { flex-direction: column; align-items: flex-start; }
+    .brand-logo { width: min(280px, 100%); }
+    .brand-title-block { min-width: 0; }
+  }
+  .filter-panel {
+    margin: 24px 32px 0;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 78, 120, 0.12);
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 78, 120, 0.05);
+  }
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .filter-heading {
+    min-width: 0;
+  }
+  .filter-title {
+    color: var(--cd-regal-blue);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .filter-subtitle {
+    color: var(--cd-grey);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .filter-toggle {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 78, 120, 0.18);
+    background: var(--cd-light-grey);
+    color: var(--cd-regal-blue);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .filter-panel.is-collapsed .filter-grid {
+    display: none;
+  }
+  .filter-panel.is-collapsed .filter-header {
+    margin-bottom: 0;
+  }
+  .filter-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(130px, 1fr)) auto;
+    gap: 10px;
+    align-items: end;
+  }
+  .filter-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--cd-regal-blue);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .filter-field input,
+  .filter-field select {
+    width: 100%;
+    min-height: 40px;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  .filter-clear-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 78, 120, 0.22);
+    background: var(--cd-light-grey);
+    color: var(--cd-dark-grey);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .checkbox-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid rgba(0,78,120,0.28);
+    border-radius: 10px;
+    background: #FFFFFF;
+  }
+  .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #000000;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .checkbox-option input {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--cd-classic-green);
+  }
+  @media (max-width: 1100px) {
+    .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .filter-panel { margin: 18px 16px 0; }
+    .filter-grid { grid-template-columns: 1fr; }
+  }
+  .upcoming-panel {
+    margin: 16px 32px 0;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 78, 120, 0.12);
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 78, 120, 0.05);
+  }
+  .upcoming-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .upcoming-heading {
+    min-width: 0;
+  }
+  .upcoming-title {
+    color: var(--cd-regal-blue);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .upcoming-subtitle {
+    color: var(--cd-grey);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .upcoming-toggle {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 78, 120, 0.18);
+    background: var(--cd-light-grey);
+    color: var(--cd-regal-blue);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .upcoming-panel.is-collapsed .upcoming-list {
+    display: none;
+  }
+  .upcoming-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .upcoming-item {
+    padding: 10px 11px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 78, 120, 0.1);
+    background: var(--cd-light-grey);
+    cursor: pointer;
+  }
+  .upcoming-item:hover {
+    border-color: rgba(0, 167, 225, 0.35);
+    background: rgba(0, 167, 225, 0.08);
+  }
+  .upcoming-date {
+    color: var(--cd-classic-green);
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+  .upcoming-name {
+    margin-top: 4px;
+    color: var(--cd-regal-blue);
+    font-size: 13px;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .upcoming-meta {
+    margin-top: 4px;
+    color: var(--cd-grey);
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .upcoming-empty {
+    color: var(--cd-grey);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  @media (max-width: 1100px) {
+    .upcoming-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .upcoming-panel { margin: 14px 16px 0; }
+    .upcoming-list { grid-template-columns: 1fr; }
+  }
+  .quarter-panel {
+    margin: 16px 32px 0;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 78, 120, 0.12);
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 78, 120, 0.05);
+  }
+  .quarter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .quarter-heading {
+    min-width: 0;
+  }
+  .quarter-title {
+    color: var(--cd-regal-blue);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .quarter-subtitle {
+    color: var(--cd-grey);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .quarter-toggle {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 78, 120, 0.18);
+    background: var(--cd-light-grey);
+    color: var(--cd-regal-blue);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .quarter-panel.is-collapsed .quarter-grid {
+    display: none;
+  }
+  .quarter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .quarter-card {
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 78, 120, 0.1);
+    background: var(--cd-light-grey);
+  }
+  .quarter-name {
+    color: var(--cd-regal-blue);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+  .quarter-months {
+    margin-top: 3px;
+    color: var(--cd-grey);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .quarter-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .quarter-stat {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: var(--cd-dark-grey);
+    border: 1px solid rgba(0, 78, 120, 0.1);
+    font-size: 11px;
+    font-weight: 800;
+  }
+  @media (max-width: 900px) {
+    .quarter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .quarter-panel { margin: 14px 16px 0; }
+    .quarter-grid { grid-template-columns: 1fr; }
+  }
 
   .month-col {
     min-height: 128px;
@@ -36,6 +361,32 @@
   .month-col.drag-over {
     box-shadow: inset 0 0 0 2px var(--accent);
     background: rgba(0, 167, 225, 0.08) !important;
+  }
+  .month-title {
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--cd-regal-blue);
+  }
+  .month-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0 12px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(37, 160, 70, 0.09);
+    color: var(--cd-dark-grey);
+    border: 1px solid rgba(37, 160, 70, 0.16);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .month-summary.is-empty {
+    background: var(--cd-light-grey);
+    border-color: rgba(137, 137, 137, 0.22);
+    color: var(--cd-grey);
   }
   .task-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
   .task-card {
@@ -69,14 +420,16 @@
     line-height: 1;
     border: 1px solid rgba(0, 78, 120, 0.12);
   }
-  .task-pill.color-pill { padding-left: 6px; }
-  .task-pill-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
+  .status-pill { font-weight: 800; }
+  .status-planned { background: rgba(0, 78, 120, 0.08); color: var(--cd-regal-blue); }
+  .status-in-progress { background: rgba(0, 167, 225, 0.12); color: var(--cd-regal-blue); }
+  .status-approved { background: rgba(37, 160, 70, 0.12); color: var(--cd-classic-green); }
+  .status-completed { background: rgba(137, 137, 137, 0.14); color: var(--cd-dark-grey); }
+  .status-on-hold { background: rgba(196, 146, 63, 0.16); color: #7a551b; }
+  .priority-pill { font-weight: 800; }
+  .priority-high { background: rgba(196, 146, 63, 0.18); color: #7a551b; }
+  .priority-medium { background: rgba(0, 167, 225, 0.12); color: var(--cd-regal-blue); }
+  .priority-low { background: rgba(137, 137, 137, 0.14); color: var(--cd-dark-grey); }
   .task-notes-preview {
     font-size: 12px;
     color: var(--cd-grey);
@@ -157,23 +510,76 @@
  </head>
 <body class="h-full overflow-auto" style="background: #F5F5F5;">
   <div id="app" class="h-full w-full" style="min-height: 100%;"><!-- Header -->
-   <div style="padding: 28px 32px 16px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 4px solid #25A046; background: #FFFFFF;">
-    <div>
-     <h1 id="calTitle" style="font-family: 'Proxima Nova', 'Metropolis', Arial, sans-serif; font-size: 32px; font-weight: 700; color: #004E78;"></h1>
-     <p id="taskCount" style="color: #4A4A49; font-size: 14px; margin-top: 4px;">0 campaigns</p>
-     <p style="color: #898989; font-size: 12px; margin-top: 4px;">Stored in this browser with localStorage</p>
-     <p id="lastSavedNote" style="color: #898989; font-size: 12px; margin-top: 4px;">Not saved yet</p>
+   <div class="app-header">
+    <div class="brand-lockup">
+     <img class="brand-logo" src="./assets/classic-displays-logo-colour-rgb.png" alt="Classic Displays">
+     <div class="brand-title-block">
+      <h1 id="calTitle" style="font-family: 'Proxima Nova', 'Metropolis', Arial, sans-serif; font-size: 32px; font-weight: 700; color: #004E78;"></h1>
+      <p id="taskCount" style="color: #4A4A49; font-size: 14px; margin-top: 4px;">0 campaigns</p>
+      <p style="color: #898989; font-size: 12px; margin-top: 4px;">Stored in this browser with localStorage</p>
+      <p id="lastSavedNote" style="color: #898989; font-size: 12px; margin-top: 4px;">Not saved yet</p>
+     </div>
     </div>
-    <div style="display: flex; gap: 8px;"><button id="copyBtn" onclick="copyCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #25A046; color: #fff; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
-      <svg data-lucide="copy" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-      </svg> Copy </button> <button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; border-radius: 8px; background: #004E78; color: #FFFFFF; border: 1px solid #004E78; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+    <div style="display: flex; gap: 8px;"><button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; border-radius: 8px; background: #004E78; color: #FFFFFF; border: 1px solid #004E78; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
       <svg data-lucide="upload" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>
-      </svg> Import CSV </button> <button id="saveBtn" onclick="downloadCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #00A7E1; color: #FFFFFF; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+      </svg> Import Backup </button> <button id="saveBtn" onclick="downloadCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #00A7E1; color: #FFFFFF; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
       <svg data-lucide="download" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
-      </svg> Export CSV </button>
+      </svg> Download Excel CSV </button>
     </div>
    </div><!-- Month Grid -->
-   <div class="month-grid" style="padding: 0 32px 32px;" id="monthGrid"></div>
+   <div class="filter-panel is-collapsed">
+    <div class="filter-header">
+     <div class="filter-heading">
+      <div class="filter-title">Search / Filter</div>
+      <div class="filter-subtitle">Find campaigns by status, owner, type, product, or notes</div>
+     </div>
+     <button class="filter-toggle" type="button" id="filterToggle" aria-expanded="false">Show</button>
+    </div>
+    <div class="filter-grid">
+     <div class="filter-field">
+      <label for="searchInput">Search</label>
+      <input id="searchInput" type="search" placeholder="Search name, product, owner, notes..." autocomplete="off">
+     </div>
+     <div class="filter-field">
+      <label for="statusFilter">Status</label>
+      <select id="statusFilter"><option value="">All statuses</option></select>
+     </div>
+     <div class="filter-field">
+      <label for="priorityFilter">Priority</label>
+      <select id="priorityFilter"><option value="">All priorities</option></select>
+     </div>
+     <div class="filter-field">
+      <label for="ownerFilter">Owner</label>
+      <select id="ownerFilter"><option value="">All owners</option></select>
+     </div>
+     <div class="filter-field">
+      <label for="typeFilter">Campaign Type</label>
+      <select id="typeFilter"><option value="">All types</option></select>
+     </div>
+     <button class="filter-clear-btn" type="button" id="clearFiltersBtn">Clear</button>
+    </div>
+   </div>
+   <div class="month-grid" style="padding: 24px 32px 32px;" id="monthGrid"></div>
+   <div class="upcoming-panel is-collapsed">
+    <div class="upcoming-header">
+     <div class="upcoming-heading">
+      <div class="upcoming-title">Upcoming Deadlines</div>
+      <div class="upcoming-subtitle" id="upcomingSubtitle">Next 5 dated campaigns</div>
+     </div>
+     <button class="upcoming-toggle" type="button" id="upcomingToggle" aria-expanded="false">Show</button>
+    </div>
+    <div class="upcoming-list" id="upcomingList"></div>
+   </div>
+   <div class="quarter-panel is-collapsed" style="margin-bottom: 32px;">
+    <div class="quarter-header">
+     <div class="quarter-heading">
+      <div class="quarter-title">Quarter View</div>
+      <div class="quarter-subtitle" id="quarterSubtitle">Campaigns grouped by quarter</div>
+     </div>
+     <button class="quarter-toggle" type="button" id="quarterToggle" aria-expanded="false">Show</button>
+    </div>
+    <div class="quarter-grid" id="quarterGrid"></div>
+   </div>
   </div><!-- Edit Modal -->
   <input id="importFile" type="file" accept=".csv,text/csv" onchange="importCalendar(event)" hidden>
   <div class="edit-overlay" id="editOverlay">
@@ -187,6 +593,23 @@
     </div>
     <div style="margin-bottom: 12px;">
      <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Name</label> <input id="editName" type="text" placeholder="Summer promo" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom: 12px;">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Status</label> <select id="editStatus" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"><option value="">None</option><option>Planned</option><option>In Progress</option><option>Approved</option><option>Completed</option><option>On Hold</option></select>
+    </div>
+    <div style="margin-bottom: 12px;">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Priority</label> <select id="editPriority" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"><option value="">None</option><option>High</option><option>Medium</option><option>Low</option></select>
+    </div>
+    <div style="margin-bottom: 12px;">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Owner / Responsible Person</label> <input id="editOwner" type="text" placeholder="Ali, Marketing, Sales..." style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom: 12px;">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Budget</label> <input id="editBudget" type="text" inputmode="decimal" placeholder="$500" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom: 12px;">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Campaign Types</label> <div class="checkbox-list" id="editCampaignTypes"></div>
+     <div style="display:flex;gap:8px;margin-top:8px;"><input id="editCustomCampaignType" type="text" placeholder="Add custom type" style="flex:1;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:9px 10px;font-size:13px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"> <button type="button" onclick="addCustomCampaignType()" style="padding:9px 12px;border-radius:10px;background:#004E78;color:#FFFFFF;border:none;cursor:pointer;font-size:13px;font-weight:800;">Add</button></div>
+     <div style="color:#898989;font-size:11px;margin-top:5px;">Check all mediums that apply.</div>
     </div>
     <div style="margin-bottom: 12px;">
      <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Products</label> <textarea id="editProducts" rows="2" placeholder="List products" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;resize:none;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"></textarea>
@@ -224,6 +647,46 @@
     </div>
     <div class="view-field">
      <div class="view-label">
+      Status
+     </div>
+     <div class="view-value" id="viewStatus">
+      -
+     </div>
+    </div>
+    <div class="view-field">
+     <div class="view-label">
+      Priority
+     </div>
+     <div class="view-value" id="viewPriority">
+      -
+     </div>
+    </div>
+    <div class="view-field">
+     <div class="view-label">
+      Owner
+     </div>
+     <div class="view-value" id="viewOwner">
+      -
+     </div>
+    </div>
+    <div class="view-field">
+     <div class="view-label">
+      Budget
+     </div>
+     <div class="view-value" id="viewBudget">
+      -
+     </div>
+    </div>
+    <div class="view-field">
+     <div class="view-label">
+      Campaign Types
+     </div>
+     <div class="view-value" id="viewCampaignType">
+      -
+     </div>
+    </div>
+    <div class="view-field">
+     <div class="view-label">
       Products
      </div>
      <div class="view-value" id="viewProducts" style="white-space: pre-wrap;">
@@ -252,6 +715,9 @@ const STORAGE_KEY = 'marketing-calendar.tasks.v2';
 const LAST_SAVED_KEY = 'marketing-calendar.last-saved.v2';
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const COLORS = ['#004E78','#25A046','#00A7E1','#898989','#4A4A49','#C4923F'];
+const STATUSES = ['Planned','In Progress','Approved','Completed','On Hold'];
+const PRIORITIES = ['High','Medium','Low'];
+const CAMPAIGN_TYPES = ['General','Product Launch','Seasonal','Trade Show','Email','Social','Print'];
 
 const defaultConfig = {
   calendar_title: 'Marketing Calendar 2026',
@@ -306,6 +772,44 @@ function normalizeMonthValue(value) {
   return index >= 0 ? index : 0;
 }
 
+function normalizeStatus(value, fallback = '') {
+  const raw = String(value ?? '').trim();
+  if (!raw || raw.toLowerCase() === 'none') return '';
+  const match = STATUSES.find(status => status.toLowerCase() === raw.toLowerCase());
+  return match || fallback;
+}
+
+function normalizePriority(value, fallback = '') {
+  const raw = String(value ?? '').trim();
+  if (!raw || raw.toLowerCase() === 'none') return '';
+  const match = PRIORITIES.find(priority => priority.toLowerCase() === raw.toLowerCase());
+  return match || fallback;
+}
+
+function normalizeCampaignTypes(value, fallback = []) {
+  const values = Array.isArray(value)
+    ? value
+    : String(value ?? '').split(/[;,|]/);
+  if (!values.some(item => String(item).trim()) || values.some(item => String(item).trim().toLowerCase() === 'none')) {
+    return fallback;
+  }
+  const selected = [];
+  values.forEach(item => {
+    const raw = String(item).trim();
+    if (!raw) return;
+    const builtIn = CAMPAIGN_TYPES.find(type => type.toLowerCase() === raw.toLowerCase());
+    const valueToUse = builtIn || raw;
+    if (!selected.some(existing => existing.toLowerCase() === valueToUse.toLowerCase())) {
+      selected.push(valueToUse);
+    }
+  });
+  return selected.length ? selected : fallback;
+}
+
+function getCampaignTypesLabel(value) {
+  return normalizeCampaignTypes(value).join(', ');
+}
+
 function normalizeTask(task = {}, index = 0) {
   const name = String(task.name ?? task.text ?? 'Campaign').trim() || 'Campaign';
   const orderValue = Number(task.order);
@@ -316,6 +820,13 @@ function normalizeTask(task = {}, index = 0) {
     order: Number.isFinite(orderValue) ? orderValue : Date.now() + index,
     color: typeof task.color === 'string' && task.color ? task.color : COLORS[0],
     date: String(task.date ?? '').trim(),
+    status: Object.prototype.hasOwnProperty.call(task, 'status') ? normalizeStatus(task.status, STATUSES[0]) : STATUSES[0],
+    priority: Object.prototype.hasOwnProperty.call(task, 'priority') ? normalizePriority(task.priority, 'Medium') : 'Medium',
+    owner: String(task.owner ?? '').trim(),
+    budget: String(task.budget ?? '').trim(),
+    campaignTypes: Object.prototype.hasOwnProperty.call(task, 'campaignTypes') || Object.prototype.hasOwnProperty.call(task, 'campaignType') || Object.prototype.hasOwnProperty.call(task, 'type')
+      ? normalizeCampaignTypes(task.campaignTypes ?? task.campaignType ?? task.type, [])
+      : [CAMPAIGN_TYPES[0]],
     name,
     text: name,
     products: String(task.products ?? '').trim(),
@@ -386,6 +897,284 @@ function initEditMonthOptions() {
   select.innerHTML = MONTHS.map((month, index) => `<option value="${index}">${month}</option>`).join('');
 }
 
+function getCampaignTypeOptions(extraTypes = []) {
+  const usedTypes = allTasks.flatMap(task => normalizeCampaignTypes(task.campaignTypes ?? task.campaignType, []));
+  const options = [];
+  [...CAMPAIGN_TYPES, ...usedTypes, ...extraTypes].forEach(type => {
+    const value = String(type || '').trim();
+    if (value && !options.some(option => option.toLowerCase() === value.toLowerCase())) {
+      options.push(value);
+    }
+  });
+  return options;
+}
+
+function renderCampaignTypeCheckboxes(selectedTypes = []) {
+  const container = document.getElementById('editCampaignTypes');
+  if (!container) return;
+
+  const options = ['', ...getCampaignTypeOptions(selectedTypes)];
+  container.innerHTML = options.map(type => {
+    const label = type || 'None';
+    return `
+      <label class="checkbox-option">
+        <input type="checkbox" value="${escHtml(type)}">
+        <span>${escHtml(label)}</span>
+      </label>
+    `;
+  }).join('');
+
+  container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      const noneCheckbox = container.querySelector('input[value=""]');
+      const typeCheckboxes = Array.from(container.querySelectorAll('input[type="checkbox"]')).filter(input => input.value);
+
+      if (!checkbox.value && checkbox.checked) {
+        typeCheckboxes.forEach(input => { input.checked = false; });
+        return;
+      }
+
+      if (checkbox.value && checkbox.checked && noneCheckbox) {
+        noneCheckbox.checked = false;
+      }
+
+      if (noneCheckbox && !typeCheckboxes.some(input => input.checked)) {
+        noneCheckbox.checked = true;
+      }
+    });
+  });
+
+  container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    checkbox.checked = selectedTypes.length ? selectedTypes.includes(checkbox.value) : checkbox.value === '';
+  });
+}
+
+function initCampaignTypeCheckboxes() {
+  renderCampaignTypeCheckboxes();
+}
+
+function addCustomCampaignType() {
+  const input = document.getElementById('editCustomCampaignType');
+  if (!input) return;
+  const customType = input.value.trim();
+  if (!customType) return;
+
+  const selectedTypes = Array.from(document.querySelectorAll('#editCampaignTypes input[type="checkbox"]:checked'))
+    .map(checkbox => checkbox.value)
+    .filter(Boolean);
+  const nextTypes = normalizeCampaignTypes([...selectedTypes, customType], []);
+  renderCampaignTypeCheckboxes(nextTypes);
+  input.value = '';
+}
+
+function setSelectOptions(selectId, values, emptyLabel) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  const currentValue = select.value;
+  select.innerHTML = `<option value="">${emptyLabel}</option>` + values
+    .map(value => `<option value="${escHtml(value)}">${escHtml(value)}</option>`)
+    .join('');
+  select.value = values.includes(currentValue) ? currentValue : '';
+}
+
+function initFilterOptions() {
+  setSelectOptions('statusFilter', STATUSES, 'All statuses');
+  setSelectOptions('priorityFilter', PRIORITIES, 'All priorities');
+  updateOwnerFilterOptions();
+  updateTypeFilterOptions();
+
+  ['searchInput', 'statusFilter', 'priorityFilter', 'ownerFilter', 'typeFilter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', renderTasks);
+      el.addEventListener('change', renderTasks);
+    }
+  });
+
+  document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('priorityFilter').value = '';
+    document.getElementById('ownerFilter').value = '';
+    document.getElementById('typeFilter').value = '';
+    renderTasks();
+  });
+}
+
+function initFilterToggle() {
+  const panel = document.querySelector('.filter-panel');
+  const toggle = document.getElementById('filterToggle');
+  if (!panel || !toggle) return;
+
+  toggle.addEventListener('click', () => {
+    const isCollapsed = panel.classList.toggle('is-collapsed');
+    toggle.textContent = isCollapsed ? 'Show' : 'Hide';
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+  });
+}
+
+function initUpcomingToggle() {
+  const panel = document.querySelector('.upcoming-panel');
+  const toggle = document.getElementById('upcomingToggle');
+  if (!panel || !toggle) return;
+
+  toggle.addEventListener('click', () => {
+    const isCollapsed = panel.classList.toggle('is-collapsed');
+    toggle.textContent = isCollapsed ? 'Show' : 'Hide';
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+  });
+}
+
+function initQuarterToggle() {
+  const panel = document.querySelector('.quarter-panel');
+  const toggle = document.getElementById('quarterToggle');
+  if (!panel || !toggle) return;
+
+  toggle.addEventListener('click', () => {
+    const isCollapsed = panel.classList.toggle('is-collapsed');
+    toggle.textContent = isCollapsed ? 'Show' : 'Hide';
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+  });
+}
+
+function updateOwnerFilterOptions() {
+  const owners = [...new Set(allTasks.map(task => String(task.owner || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  setSelectOptions('ownerFilter', owners, 'All owners');
+}
+
+function updateTypeFilterOptions() {
+  setSelectOptions('typeFilter', getCampaignTypeOptions(), 'All types');
+}
+
+function getFilterState() {
+  return {
+    query: String(document.getElementById('searchInput')?.value || '').trim().toLowerCase(),
+    status: document.getElementById('statusFilter')?.value || '',
+    priority: document.getElementById('priorityFilter')?.value || '',
+    owner: document.getElementById('ownerFilter')?.value || '',
+    type: document.getElementById('typeFilter')?.value || ''
+  };
+}
+
+function hasActiveFilters(filters = getFilterState()) {
+  return Boolean(filters.query || filters.status || filters.priority || filters.owner || filters.type);
+}
+
+function taskMatchesFilters(task, filters) {
+  const campaignTypes = normalizeCampaignTypes(task.campaignTypes ?? task.campaignType);
+  const searchable = [
+    task.name,
+    task.text,
+    task.date,
+    task.owner,
+    task.budget,
+    task.products,
+    task.notes,
+    normalizeStatus(task.status),
+    normalizePriority(task.priority),
+    campaignTypes.join(' '),
+    MONTHS[normalizeMonthValue(task.month)]
+  ].join(' ').toLowerCase();
+
+  if (filters.query && !searchable.includes(filters.query)) return false;
+  if (filters.status && normalizeStatus(task.status) !== filters.status) return false;
+  if (filters.priority && normalizePriority(task.priority) !== filters.priority) return false;
+  if (filters.owner && String(task.owner || '').trim() !== filters.owner) return false;
+  if (filters.type && !campaignTypes.includes(filters.type)) return false;
+  return true;
+}
+
+function getVisibleTasks(filters = getFilterState()) {
+  return allTasks.filter(task => taskMatchesFilters(task, filters));
+}
+
+function getUpcomingTasks(tasks, limit = 5) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return tasks
+    .map(task => ({ task, date: parseCampaignDate(task.date) }))
+    .filter(item => item.date && item.date >= today)
+    .sort((a, b) => a.date - b.date || Number(a.task.order || 0) - Number(b.task.order || 0))
+    .slice(0, limit);
+}
+
+function renderUpcomingDeadlines(tasks, filtersActive) {
+  const list = document.getElementById('upcomingList');
+  const subtitle = document.getElementById('upcomingSubtitle');
+  if (!list || !subtitle) return;
+
+  const upcoming = getUpcomingTasks(tasks);
+  subtitle.textContent = filtersActive ? 'Next 5 matching dated campaigns' : 'Next 5 dated campaigns';
+  list.innerHTML = '';
+
+  if (!upcoming.length) {
+    const empty = document.createElement('div');
+    empty.className = 'upcoming-empty';
+    empty.textContent = filtersActive ? 'No upcoming deadlines match the current filters.' : 'No upcoming dated campaigns yet.';
+    list.appendChild(empty);
+    return;
+  }
+
+  upcoming.forEach(({ task, date }) => {
+    const item = document.createElement('button');
+    const meta = [
+      MONTHS[normalizeMonthValue(task.month)],
+      normalizeStatus(task.status),
+      normalizePriority(task.priority)
+    ].filter(Boolean).join(' · ');
+    item.type = 'button';
+    item.className = 'upcoming-item';
+    item.style.borderLeft = `4px solid ${task.color || COLORS[0]}`;
+    item.innerHTML = `
+      <div class="upcoming-date">${escHtml(formatCardDate(task.date))} · ${escHtml(formatDeadlineDistance(date))}</div>
+      <div class="upcoming-name">${escHtml(task.name || task.text || 'Campaign')}</div>
+      <div class="upcoming-meta">${escHtml(meta)}</div>
+    `;
+    item.addEventListener('click', () => openView(task));
+    list.appendChild(item);
+  });
+}
+
+function getQuarterStats(tasks) {
+  return [0, 1, 2, 3].map(quarter => {
+    const startMonth = quarter * 3;
+    const quarterTasks = tasks.filter(task => {
+      const month = normalizeMonthValue(task.month);
+      return month >= startMonth && month <= startMonth + 2;
+    });
+    const productCount = quarterTasks.reduce((total, task) => total + getProductsList(task.products).length, 0);
+    const highPriorityCount = quarterTasks.filter(task => normalizePriority(task.priority) === 'High').length;
+
+    return {
+      label: `Q${quarter + 1}`,
+      months: MONTHS.slice(startMonth, startMonth + 3).map(month => month.slice(0, 3)).join(' - '),
+      campaignCount: quarterTasks.length,
+      productCount,
+      highPriorityCount
+    };
+  });
+}
+
+function renderQuarterView(tasks, filtersActive) {
+  const grid = document.getElementById('quarterGrid');
+  const subtitle = document.getElementById('quarterSubtitle');
+  if (!grid || !subtitle) return;
+
+  subtitle.textContent = filtersActive ? 'Filtered campaigns grouped by quarter' : 'Campaigns grouped by quarter';
+  grid.innerHTML = getQuarterStats(tasks).map(quarter => `
+    <div class="quarter-card">
+      <div class="quarter-name">${escHtml(quarter.label)}</div>
+      <div class="quarter-months">${escHtml(quarter.months)}</div>
+      <div class="quarter-stats">
+        <span class="quarter-stat">${quarter.campaignCount} campaign${quarter.campaignCount === 1 ? '' : 's'}</span>
+        <span class="quarter-stat">${quarter.productCount} product${quarter.productCount === 1 ? '' : 's'}</span>
+        <span class="quarter-stat">${quarter.highPriorityCount} high priority</span>
+      </div>
+    </div>
+  `).join('');
+}
+
 function flashSavedTask(taskId) {
   pendingHighlightId = taskId;
   renderTasks();
@@ -414,6 +1203,29 @@ function formatCardDate(value) {
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
+function parseCampaignDate(value) {
+  if (!value) return null;
+  const date = new Date(`${value}T00:00:00`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getDaysUntil(date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+  return Math.round((target - today) / 86400000);
+}
+
+function formatDeadlineDistance(date) {
+  const days = getDaysUntil(date);
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Tomorrow';
+  if (days > 1) return `In ${days} days`;
+  if (days === -1) return 'Yesterday';
+  return `${Math.abs(days)} days ago`;
+}
+
 function getProductsList(value) {
   return String(value || '')
     .split(/\r?\n|,/)
@@ -428,23 +1240,46 @@ function getProductSummary(value) {
   return `${items.length} products`;
 }
 
+function getMonthSummary(tasks) {
+  const campaignText = `${tasks.length} campaign${tasks.length === 1 ? '' : 's'}`;
+  const productCount = tasks.reduce((total, task) => total + getProductsList(task.products).length, 0);
+  if (!productCount) return campaignText;
+  return `${campaignText} · ${productCount} product${productCount === 1 ? '' : 's'}`;
+}
+
 function getNotesPreview(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function getStatusClass(status) {
+  return `status-${normalizeStatus(status).toLowerCase().replace(/\s+/g, '-')}`;
+}
+
+function getPriorityClass(priority) {
+  return `priority-${normalizePriority(priority).toLowerCase()}`;
 }
 
 function renderCardMarkup(t) {
   const displayDate = formatCardDate(t.date);
   const productSummary = getProductSummary(t.products);
   const notesPreview = getNotesPreview(t.notes);
-  const colorLabel = getColorLabel(t.color || COLORS[0]);
+  const status = normalizeStatus(t.status);
+  const priority = normalizePriority(t.priority);
+  const owner = String(t.owner || '').trim();
+  const budget = String(t.budget || '').trim();
+  const campaignTypesLabel = getCampaignTypesLabel(t.campaignTypes ?? t.campaignType);
 
   return `
     <div class="task-content">
       <div class="task-title">${escHtml(t.text)}</div>
       ${displayDate ? `<div class="task-date">${escHtml(displayDate)}</div>` : ''}
       <div class="task-meta">
+        ${status ? `<span class="task-pill status-pill ${getStatusClass(status)}">${escHtml(status)}</span>` : ''}
+        ${priority ? `<span class="task-pill priority-pill ${getPriorityClass(priority)}">${escHtml(priority)}</span>` : ''}
+        ${owner ? `<span class="task-pill">Owner: ${escHtml(owner)}</span>` : ''}
+        ${budget ? `<span class="task-pill">Budget: ${escHtml(budget)}</span>` : ''}
+        ${campaignTypesLabel ? `<span class="task-pill">${escHtml(campaignTypesLabel)}</span>` : ''}
         ${productSummary ? `<span class="task-pill">${escHtml(productSummary)}</span>` : ''}
-        <span class="task-pill color-pill"><span class="task-pill-dot" style="background:${escHtml(t.color || COLORS[0])};"></span>${escHtml(colorLabel)}</span>
       </div>
       ${notesPreview ? `<div class="task-notes-preview">${escHtml(notesPreview)}</div>` : ''}
     </div>
@@ -466,7 +1301,8 @@ function buildGrid() {
     col.dataset.month = i;
     col.style.background = defaultConfig.surface_color;
     col.innerHTML = `
-      <div style="font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;color:${defaultConfig.secondary_action_color};">${m}</div>
+      <div class="month-title">${m}</div>
+      <div class="month-summary is-empty" data-summary-month="${i}">0 campaigns</div>
       <div class="task-list" data-month="${i}"></div>
       <button class="add-btn" data-month="${i}" style="color:${defaultConfig.secondary_action_color};border-color:${defaultConfig.secondary_action_color}33;">+ Add Campaign</button>
     `;
@@ -497,6 +1333,11 @@ async function addTask(month) {
     order: nextOrder(month),
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
     date: '',
+    status: STATUSES[0],
+    priority: 'Medium',
+    owner: '',
+    budget: '',
+    campaignTypes: [CAMPAIGN_TYPES[0]],
     name: '',
     text: '',
     products: '',
@@ -506,18 +1347,29 @@ async function addTask(month) {
 }
 
 function renderTasks() {
+  updateOwnerFilterOptions();
+  updateTypeFilterOptions();
+  const filters = getFilterState();
+  const visibleTasks = getVisibleTasks(filters);
+  const filtersActive = hasActiveFilters(filters);
+  renderUpcomingDeadlines(visibleTasks, filtersActive);
+  renderQuarterView(visibleTasks, filtersActive);
+
   document.querySelectorAll('.month-col').forEach(col => {
     const month = parseInt(col.dataset.month, 10);
     const list = col.querySelector('.task-list');
-    const tasks = allTasks.filter(t => normalizeMonthValue(t.month) === month).sort((a,b) => a.order - b.order);
+    const summary = col.querySelector('.month-summary');
+    const tasks = visibleTasks.filter(t => normalizeMonthValue(t.month) === month).sort((a,b) => a.order - b.order);
 
     col.classList.toggle('has-tasks', tasks.length > 0);
+    summary.textContent = getMonthSummary(tasks);
+    summary.classList.toggle('is-empty', tasks.length === 0);
     list.innerHTML = '';
 
     if (!tasks.length) {
       const hint = document.createElement('div');
       hint.className = 'task-empty-hint';
-      hint.textContent = 'No campaigns yet';
+      hint.textContent = filtersActive ? 'No matching campaigns' : 'No campaigns yet';
       list.appendChild(hint);
     }
 
@@ -527,7 +1379,9 @@ function renderTasks() {
       list.appendChild(card);
     });
   });
-  document.getElementById('taskCount').textContent = `${allTasks.length} campaign${allTasks.length!==1?'s':''}`;
+  document.getElementById('taskCount').textContent = filtersActive
+    ? `${visibleTasks.length} of ${allTasks.length} campaign${allTasks.length !== 1 ? 's' : ''} shown`
+    : `${allTasks.length} campaign${allTasks.length!==1?'s':''}`;
 }
 
 function createCard(t) {
@@ -585,6 +1439,13 @@ function openEdit(t) {
   document.getElementById('editMonth').value = String(normalizeMonthValue(t.month));
   document.getElementById('editDate').value = t.date ? String(t.date) : '';
   document.getElementById('editName').value = t.name ? String(t.name) : '';
+  document.getElementById('editStatus').value = normalizeStatus(t.status);
+  document.getElementById('editPriority').value = normalizePriority(t.priority);
+  document.getElementById('editOwner').value = t.owner ? String(t.owner) : '';
+  document.getElementById('editBudget').value = t.budget ? String(t.budget) : '';
+  const selectedCampaignTypes = normalizeCampaignTypes(t.campaignTypes ?? t.campaignType);
+  renderCampaignTypeCheckboxes(selectedCampaignTypes);
+  document.getElementById('editCustomCampaignType').value = '';
   document.getElementById('editProducts').value = t.products ? String(t.products) : '';
   document.getElementById('editNotes').value = t.notes ? String(t.notes) : '';
   
@@ -618,6 +1479,14 @@ function closeEdit() {
 function openView(t) {
   document.getElementById('viewDate').textContent = t.date && String(t.date).trim() ? String(t.date) : '-';
   document.getElementById('viewName').textContent = t.name && String(t.name).trim() ? String(t.name) : '-';
+  const status = normalizeStatus(t.status);
+  const priority = normalizePriority(t.priority);
+  const campaignTypesLabel = getCampaignTypesLabel(t.campaignTypes ?? t.campaignType);
+  document.getElementById('viewStatus').textContent = status || '-';
+  document.getElementById('viewPriority').textContent = priority || '-';
+  document.getElementById('viewOwner').textContent = t.owner && String(t.owner).trim() ? String(t.owner) : '-';
+  document.getElementById('viewBudget').textContent = t.budget && String(t.budget).trim() ? String(t.budget) : '-';
+  document.getElementById('viewCampaignType').textContent = campaignTypesLabel || '-';
   document.getElementById('viewProducts').textContent = t.products && String(t.products).trim() ? String(t.products) : '-';
   document.getElementById('viewNotes').textContent = t.notes && String(t.notes).trim() ? String(t.notes) : '-';
   document.getElementById('viewColor').style.background = t.color || COLORS[0];
@@ -633,12 +1502,17 @@ async function saveEdit() {
   const month = parseInt(document.getElementById('editMonth').value, 10) || 0;
   const date = document.getElementById('editDate').value || '';
   const name = document.getElementById('editName').value.trim() || 'Untitled';
+  const status = normalizeStatus(document.getElementById('editStatus').value);
+  const priority = normalizePriority(document.getElementById('editPriority').value);
+  const owner = document.getElementById('editOwner').value.trim() || '';
+  const budget = document.getElementById('editBudget').value.trim() || '';
+  const campaignTypes = normalizeCampaignTypes(Array.from(document.querySelectorAll('#editCampaignTypes input[type="checkbox"]:checked')).map(input => input.value));
   const products = document.getElementById('editProducts').value.trim() || '';
   const notes = document.getElementById('editNotes').value.trim() || '';
   const btn = document.querySelector('.edit-modal button:last-child');
   btn.disabled = true; btn.textContent = '...';
   btn.disabled = false; btn.textContent = 'Save';
-  editingTask = upsertTask({ ...editingTask, month, text: name, date, name, products, notes, color: editColor });
+  editingTask = upsertTask({ ...editingTask, month, text: name, date, status, priority, owner, budget, campaignTypes, name, products, notes, color: editColor });
   closeEdit();
   flashSavedTask(editingTask.__backendId);
   showToast('Campaign saved!');
@@ -653,18 +1527,23 @@ function showToast(msg) {
 function escHtml(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
 function buildCSV() {
-  let csvContent = 'Month,Campaign Name,Date,Products,Notes,Category\n';
+  let csvContent = 'Month,Campaign Name,Date,Status,Priority,Owner,Budget,Campaign Types,Products,Notes,Category\n';
   
   MONTHS.forEach((month, idx) => {
     const tasks = allTasks.filter(t => t.month === idx).sort((a,b) => a.order - b.order);
     tasks.forEach(t => {
       const name = t.name || '';
       const date = t.date || '';
+      const status = normalizeStatus(t.status);
+      const priority = normalizePriority(t.priority);
+      const owner = t.owner || '';
+      const budget = t.budget || '';
+      const campaignTypes = normalizeCampaignTypes(t.campaignTypes ?? t.campaignType).join('; ');
       const products = t.products || '';
       const notes = t.notes || '';
       const colorName = getColorLabel(t.color || COLORS[0]);
       
-      csvContent += `"${csvEscape(month)}","${csvEscape(name)}","${csvEscape(date)}","${csvEscape(products)}","${csvEscape(notes)}","${csvEscape(colorName)}"\n`;
+      csvContent += `"${csvEscape(month)}","${csvEscape(name)}","${csvEscape(date)}","${csvEscape(status)}","${csvEscape(priority)}","${csvEscape(owner)}","${csvEscape(budget)}","${csvEscape(campaignTypes)}","${csvEscape(products)}","${csvEscape(notes)}","${csvEscape(colorName)}"\n`;
     });
   });
   return csvContent;
@@ -740,6 +1619,15 @@ function parseCsv(text) {
   return rows;
 }
 
+function getHeaderIndex(headers, names) {
+  return headers.findIndex(header => names.includes(String(header).trim().toLowerCase()));
+}
+
+function getCsvValue(row, headerIndex, fallbackIndex) {
+  const index = headerIndex >= 0 ? headerIndex : fallbackIndex;
+  return row[index] || '';
+}
+
 function importCalendar(event) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
@@ -750,17 +1638,34 @@ function importCalendar(event) {
       const rows = parseCsv(String(reader.result || ''));
       if (!rows.length) throw new Error('The CSV file is empty.');
 
+      const headers = rows[0].map(header => String(header).trim().toLowerCase());
+      const monthIndex = getHeaderIndex(headers, ['month']);
+      const nameIndex = getHeaderIndex(headers, ['campaign name', 'name', 'campaign']);
+      const dateIndex = getHeaderIndex(headers, ['date']);
+      const statusIndex = getHeaderIndex(headers, ['status', 'campaign status']);
+      const priorityIndex = getHeaderIndex(headers, ['priority', 'campaign priority']);
+      const ownerIndex = getHeaderIndex(headers, ['owner', 'responsible person', 'responsible', 'assigned to']);
+      const budgetIndex = getHeaderIndex(headers, ['budget', 'cost', 'estimated budget']);
+      const campaignTypesIndex = getHeaderIndex(headers, ['campaign types', 'campaign type', 'types', 'type']);
+      const productsIndex = getHeaderIndex(headers, ['products', 'product']);
+      const notesIndex = getHeaderIndex(headers, ['notes', 'note']);
+
       const imported = rows
         .slice(1)
         .filter(row => row.some(cell => String(cell).trim() !== ''))
         .map((row, index) => normalizeTask({
           __backendId: generateId(),
-          month: row[0],
-          name: row[1] || 'Campaign',
-          text: row[1] || 'Campaign',
-          date: row[2] || '',
-          products: row[3] || '',
-          notes: row[4] || '',
+          month: getCsvValue(row, monthIndex, 0),
+          name: getCsvValue(row, nameIndex, 1) || 'Campaign',
+          text: getCsvValue(row, nameIndex, 1) || 'Campaign',
+          date: getCsvValue(row, dateIndex, 2),
+          status: getCsvValue(row, statusIndex, -1),
+          priority: getCsvValue(row, priorityIndex, -1),
+          owner: getCsvValue(row, ownerIndex, -1),
+          budget: getCsvValue(row, budgetIndex, -1),
+          campaignTypes: getCsvValue(row, campaignTypesIndex, -1),
+          products: getCsvValue(row, productsIndex, 3),
+          notes: getCsvValue(row, notesIndex, 4),
           color: COLORS[index % COLORS.length],
           order: Date.now() + index
         }, index));
@@ -815,6 +1720,11 @@ function applyConfig(config) {
 (async () => {
   buildGrid();
   initEditMonthOptions();
+  initCampaignTypeCheckboxes();
+  initFilterOptions();
+  initFilterToggle();
+  initUpcomingToggle();
+  initQuarterToggle();
   setLastSavedNote(localStorage.getItem(LAST_SAVED_KEY));
   applyConfig(defaultConfig);
   refreshTasks(loadTasksFromStorage());
