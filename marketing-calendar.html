@@ -6,10 +6,19 @@
   <title>Marketing Task Calendar</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
   <style>
   html, body { height: 100%; margin: 0; }
-  * { font-family: 'DM Sans', sans-serif; }
+  :root {
+    --cd-regal-blue: #004E78;
+    --cd-classic-green: #25A046;
+    --cd-bright-blue: #00A7E1;
+    --cd-grey: #898989;
+    --cd-dark-grey: #4A4A49;
+    --cd-light-grey: #F5F5F5;
+    --cd-white: #FFFFFF;
+    --cd-black: #000000;
+  }
+  * { font-family: 'Proxima Nova', 'Metropolis', Arial, sans-serif; }
   .month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
   @media (max-width: 1024px) { .month-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 768px) { .month-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -19,12 +28,14 @@
     min-height: 128px;
     border-radius: 14px;
     padding: 14px;
-    transition: box-shadow 0.2s, background 0.2s;
+    border: 1px solid rgba(0, 78, 120, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 78, 120, 0.05);
+    transition: box-shadow 0.2s, background 0.2s, border-color 0.2s;
   }
   .month-col.has-tasks { min-height: 0; }
   .month-col.drag-over {
     box-shadow: inset 0 0 0 2px var(--accent);
-    background: rgba(255,107,53,0.06) !important;
+    background: rgba(0, 167, 225, 0.08) !important;
   }
   .task-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
   .task-card {
@@ -43,8 +54,8 @@
   .task-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .task-card .actions { display: flex; gap: 4px; flex-shrink: 0; }
   .task-content { flex: 1; min-width: 0; }
-  .task-title { font-size: 13px; line-height: 1.35; font-weight: 700; word-break: break-word; color: #f3f4f6; }
-  .task-date { font-size: 12px; color: #cbd5e1; margin-top: 3px; }
+  .task-title { font-size: 13px; line-height: 1.35; font-weight: 700; word-break: break-word; color: var(--cd-regal-blue); }
+  .task-date { font-size: 12px; color: var(--cd-dark-grey); margin-top: 3px; }
   .task-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .task-pill {
     display: inline-flex;
@@ -52,11 +63,11 @@
     gap: 5px;
     padding: 3px 8px;
     border-radius: 999px;
-    background: rgba(148, 163, 184, 0.14);
-    color: #cbd5e1;
+    background: rgba(0, 78, 120, 0.08);
+    color: var(--cd-regal-blue);
     font-size: 11px;
     line-height: 1;
-    border: 1px solid rgba(148, 163, 184, 0.16);
+    border: 1px solid rgba(0, 78, 120, 0.12);
   }
   .task-pill.color-pill { padding-left: 6px; }
   .task-pill-dot {
@@ -68,7 +79,7 @@
   }
   .task-notes-preview {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--cd-grey);
     margin-top: 8px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -76,22 +87,22 @@
   }
   .task-empty-hint {
     font-size: 12px;
-    color: #667085;
+    color: var(--cd-grey);
     margin: 4px 2px 10px;
   }
   .task-card.just-saved {
     animation: taskSavedPulse 1.6s ease;
-    box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.45), 0 0 0 8px rgba(255, 107, 53, 0.08);
+    box-shadow: 0 0 0 1px rgba(37, 160, 70, 0.45), 0 0 0 8px rgba(37, 160, 70, 0.08);
   }
 
   @keyframes taskSavedPulse {
-    0% { transform: translateY(-1px) scale(0.98); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.24); }
-    35% { transform: translateY(-2px) scale(1.01); box-shadow: 0 0 0 8px rgba(255, 107, 53, 0.14); }
-    100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+    0% { transform: translateY(-1px) scale(0.98); box-shadow: 0 0 0 0 rgba(37, 160, 70, 0.24); }
+    35% { transform: translateY(-2px) scale(1.01); box-shadow: 0 0 0 8px rgba(37, 160, 70, 0.14); }
+    100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 0 rgba(37, 160, 70, 0); }
   }
 
   .color-dot { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; }
-  .color-dot:hover, .color-dot.active { border-color: #333; }
+  .color-dot:hover, .color-dot.active { border-color: var(--cd-regal-blue); }
 
   .toast-msg {
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -102,7 +113,7 @@
   .toast-msg.show { opacity: 1; }
 
   .edit-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100;
+    position: fixed; inset: 0; background: rgba(0,78,120,0.28); z-index: 100;
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity 0.2s;
   }
@@ -110,15 +121,15 @@
   .edit-modal { border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; }
   
   .view-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100;
+    position: fixed; inset: 0; background: rgba(0,78,120,0.28); z-index: 100;
     display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity 0.2s;
   }
   .view-overlay.open { opacity: 1; pointer-events: all; }
   .view-modal { border-radius: 16px; padding: 24px; width: 90%; max-width: 450px; }
   .view-field { margin-bottom: 16px; }
-  .view-label { color: #8a8f9e; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .view-value { color: #e2e4ea; font-size: 14px; line-height: 1.5; word-break: break-word; }
+  .view-label { color: var(--cd-regal-blue); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .view-value { color: var(--cd-dark-grey); font-size: 14px; line-height: 1.5; word-break: break-word; }
 
   .add-btn {
     width: 100%; border: 2px dashed; border-radius: 8px; padding: 6px;
@@ -131,23 +142,33 @@
   .confirm-bar button {
     flex: 1; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none;
   }
+  input, textarea, select {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    border-color: rgba(0, 78, 120, 0.28) !important;
+    font-family: 'Proxima Nova', 'Metropolis', Arial, sans-serif !important;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #00A7E1 !important;
+    box-shadow: 0 0 0 3px rgba(0, 167, 225, 0.14);
+  }
 </style>
   <style>body { box-sizing: border-box; }</style>
  </head>
- <body class="h-full overflow-auto" style="background: #0f1117;">
+<body class="h-full overflow-auto" style="background: #F5F5F5;">
   <div id="app" class="h-full w-full" style="min-height: 100%;"><!-- Header -->
-   <div style="padding: 28px 32px 16px; display: flex; justify-content: space-between; align-items: flex-start;">
+   <div style="padding: 28px 32px 16px; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 4px solid #25A046; background: #FFFFFF;">
     <div>
-     <h1 id="calTitle" style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #FF6B35;"></h1>
-     <p id="taskCount" style="color: #8a8f9e; font-size: 14px; margin-top: 4px;">0 campaigns</p>
-     <p style="color: #5f677c; font-size: 12px; margin-top: 4px;">Stored in this browser with localStorage</p>
-     <p id="lastSavedNote" style="color: #5f677c; font-size: 12px; margin-top: 4px;">Not saved yet</p>
+     <h1 id="calTitle" style="font-family: 'Proxima Nova', 'Metropolis', Arial, sans-serif; font-size: 32px; font-weight: 700; color: #004E78;"></h1>
+     <p id="taskCount" style="color: #4A4A49; font-size: 14px; margin-top: 4px;">0 campaigns</p>
+     <p style="color: #898989; font-size: 12px; margin-top: 4px;">Stored in this browser with localStorage</p>
+     <p id="lastSavedNote" style="color: #898989; font-size: 12px; margin-top: 4px;">Not saved yet</p>
     </div>
-    <div style="display: flex; gap: 8px;"><button id="copyBtn" onclick="copyCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #4ECDC4; color: #fff; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+    <div style="display: flex; gap: 8px;"><button id="copyBtn" onclick="copyCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #25A046; color: #fff; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
       <svg data-lucide="copy" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-      </svg> Copy </button> <button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; border-radius: 8px; background: #252833; color: #e2e4ea; border: 1px solid #3a3f4e; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+      </svg> Copy </button> <button onclick="document.getElementById('importFile').click()" style="padding: 10px 16px; border-radius: 8px; background: #004E78; color: #FFFFFF; border: 1px solid #004E78; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
       <svg data-lucide="upload" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>
-      </svg> Import CSV </button> <button id="saveBtn" onclick="downloadCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #FF6B35; color: #fff; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
+      </svg> Import CSV </button> <button id="saveBtn" onclick="downloadCalendar()" style="padding: 10px 16px; border-radius: 8px; background: #00A7E1; color: #FFFFFF; border: none; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; transition: background 0.2s;">
       <svg data-lucide="download" style="width: 16px; height: 16px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>
       </svg> Export CSV </button>
     </div>
@@ -156,32 +177,32 @@
   </div><!-- Edit Modal -->
   <input id="importFile" type="file" accept=".csv,text/csv" onchange="importCalendar(event)" hidden>
   <div class="edit-overlay" id="editOverlay">
-   <div class="edit-modal" style="background: #1a1d27; max-width: 500px; max-height: 90vh; overflow-y: auto;">
-   <h3 style="color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Edit Campaign</h3>
+   <div class="edit-modal" style="background: #FFFFFF; max-width: 500px; max-height: 90vh; overflow-y: auto; border-top: 6px solid #004E78; box-shadow: 0 24px 70px rgba(0,78,120,0.25);">
+   <h3 style="color: #004E78; font-size: 18px; font-weight: 700; margin-bottom: 16px;">Edit Campaign</h3>
     <div style="margin-bottom: 12px;">
-     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Month</label> <select id="editMonth" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;"></select>
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Month</label> <select id="editMonth" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"></select>
     </div>
     <div style="margin-bottom: 12px;">
-     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Date</label> <input id="editDate" type="date" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;accent-color:#FF6B35;color-scheme:dark;" placeholder="YYYY-MM-DD">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Date</label> <input id="editDate" type="date" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;accent-color:#25A046;color-scheme:light;" placeholder="YYYY-MM-DD">
     </div>
     <div style="margin-bottom: 12px;">
-     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Name</label> <input id="editName" type="text" placeholder="Summer promo" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Name</label> <input id="editName" type="text" placeholder="Summer promo" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;">
     </div>
     <div style="margin-bottom: 12px;">
-     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Products</label> <textarea id="editProducts" rows="2" placeholder="List products" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;resize:none;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;"></textarea>
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Products</label> <textarea id="editProducts" rows="2" placeholder="List products" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;resize:none;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"></textarea>
     </div>
     <div style="margin-bottom: 12px;">
-     <label style="color: #8a8f9e; font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Notes</label> <textarea id="editNotes" rows="3" placeholder="Add notes" style="width:100%;background:#252833;color:#fff;border:1px solid #3a3f4e;border-radius:10px;padding:10px;font-size:14px;resize:none;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;"></textarea>
+     <label style="color: #004E78; font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">Notes</label> <textarea id="editNotes" rows="3" placeholder="Add notes" style="width:100%;background:#FFFFFF;color:#000000;border:1px solid rgba(0,78,120,0.28);border-radius:10px;padding:10px;font-size:14px;resize:none;outline:none;font-family:'Proxima Nova','Metropolis',Arial,sans-serif;box-sizing:border-box;"></textarea>
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;" id="editColors"></div>
-    <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;"><button onclick="closeEdit()" style="padding:8px 18px;border-radius:8px;background:#252833;color:#8a8f9e;border:none;cursor:pointer;font-weight:600;">Cancel</button> <button onclick="saveEdit()" style="padding:8px 18px;border-radius:8px;background:#FF6B35;color:#fff;border:none;cursor:pointer;font-weight:600;">Save</button>
+    <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;"><button onclick="closeEdit()" style="padding:8px 18px;border-radius:8px;background:#F5F5F5;color:#4A4A49;border:1px solid #898989;cursor:pointer;font-weight:600;">Cancel</button> <button onclick="saveEdit()" style="padding:8px 18px;border-radius:8px;background:#25A046;color:#fff;border:none;cursor:pointer;font-weight:700;">Save</button>
     </div>
    </div>
   </div><!-- View Modal -->
   <div class="view-overlay" id="viewOverlay">
-   <div class="view-modal" style="background: #1a1d27;">
+  <div class="view-modal" style="background: #FFFFFF; border-top: 6px solid #004E78; box-shadow: 0 24px 70px rgba(0,78,120,0.25);">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-     <h3 style="color: #fff; font-size: 18px; font-weight: 600; margin: 0;">Campaign Details</h3><button onclick="closeView()" style="background: none; border: none; cursor: pointer; color: #8a8f9e; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
+     <h3 style="color: #004E78; font-size: 18px; font-weight: 700; margin: 0;">Campaign Details</h3><button onclick="closeView()" style="background: none; border: none; cursor: pointer; color: #898989; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
       <svg data-lucide="x" style="width: 20px; height: 20px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
       </svg></button>
     </div>
@@ -222,24 +243,24 @@
       Category Color
      </div>
      <div id="viewColor" style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid #3a3f4e;"></div>
-    </div><button onclick="closeView()" style="width: 100%; padding: 10px; margin-top: 16px; border-radius: 8px; background: #252833; color: #8a8f9e; border: none; cursor: pointer; font-weight: 600;">Close</button>
+    </div><button onclick="closeView()" style="width: 100%; padding: 10px; margin-top: 16px; border-radius: 8px; background: #004E78; color: #FFFFFF; border: none; cursor: pointer; font-weight: 600;">Close</button>
    </div>
   </div><!-- Toast -->
-  <div class="toast-msg" id="toast" style="background:#FF6B35;color:#fff;"></div>
+  <div class="toast-msg" id="toast" style="background:#004E78;color:#fff;"></div>
   <script>
 const STORAGE_KEY = 'marketing-calendar.tasks.v2';
 const LAST_SAVED_KEY = 'marketing-calendar.last-saved.v2';
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const COLORS = ['#FF6B35','#4ECDC4','#A78BFA','#F59E0B','#EC4899','#34D399'];
+const COLORS = ['#004E78','#25A046','#00A7E1','#898989','#4A4A49','#C4923F'];
 
 const defaultConfig = {
   calendar_title: 'Marketing Calendar 2026',
-  background_color: '#0f1117',
-  surface_color: '#1a1d27',
-  text_color: '#e2e4ea',
-  primary_action_color: '#FF6B35',
-  secondary_action_color: '#8a8f9e',
-  font_family: 'DM Sans',
+  background_color: '#F5F5F5',
+  surface_color: '#FFFFFF',
+  text_color: '#4A4A49',
+  primary_action_color: '#004E78',
+  secondary_action_color: '#25A046',
+  font_family: 'Proxima Nova',
   font_size: 14
 };
 
@@ -378,12 +399,12 @@ function flashSavedTask(taskId) {
 }
 
 function getColorLabel(color) {
-  return color === '#FF6B35' ? 'Orange'
-    : color === '#4ECDC4' ? 'Teal'
-    : color === '#A78BFA' ? 'Purple'
-    : color === '#F59E0B' ? 'Amber'
-    : color === '#EC4899' ? 'Pink'
-    : 'Green';
+  return color === '#004E78' ? 'Regal Blue'
+    : color === '#25A046' ? 'Classic Green'
+    : color === '#00A7E1' ? 'Bright Blue'
+    : color === '#898989' ? 'Grey'
+    : color === '#4A4A49' ? 'Dark Grey'
+    : 'Holiday Gold';
 }
 
 function formatCardDate(value) {
@@ -428,9 +449,9 @@ function renderCardMarkup(t) {
       ${notesPreview ? `<div class="task-notes-preview">${escHtml(notesPreview)}</div>` : ''}
     </div>
     <div class="actions" style="display:flex;gap:4px;flex-shrink:0;">
-      <button class="view-btn" style="background:none;border:none;cursor:pointer;padding:2px;color:#8a8f9e;"><svg data-lucide="eye" style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-      <button class="edit-btn" style="background:none;border:none;cursor:pointer;padding:2px;color:#8a8f9e;"><svg data-lucide="pencil" style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button>
-      <button class="del-btn" style="background:none;border:none;cursor:pointer;padding:2px;color:#8a8f9e;"><svg data-lucide="trash-2" style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+      <button class="view-btn" style="background:none;border:none;cursor:pointer;padding:2px;color:#004E78;"><svg data-lucide="eye" style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+      <button class="edit-btn" style="background:none;border:none;cursor:pointer;padding:2px;color:#004E78;"><svg data-lucide="pencil" style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button>
+      <button class="del-btn" style="background:none;border:none;cursor:pointer;padding:2px;color:#898989;"><svg data-lucide="trash-2" style="width:14px;height:14px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
     </div>
   `;
 }
@@ -514,7 +535,7 @@ function createCard(t) {
   card.className = 'task-card';
   card.dataset.id = t.__backendId;
   card.draggable = true;
-  card.style.background = '#252833';
+  card.style.background = '#FFFFFF';
   card.style.borderLeft = `4px solid ${t.color || COLORS[0]}`;
   card.style.color = defaultConfig.text_color;
   card.innerHTML = renderCardMarkup(t);
@@ -641,7 +662,7 @@ function buildCSV() {
       const date = t.date || '';
       const products = t.products || '';
       const notes = t.notes || '';
-      const colorName = t.color === '#FF6B35' ? 'Orange' : t.color === '#4ECDC4' ? 'Teal' : t.color === '#A78BFA' ? 'Purple' : t.color === '#F59E0B' ? 'Amber' : t.color === '#EC4899' ? 'Pink' : 'Green';
+      const colorName = getColorLabel(t.color || COLORS[0]);
       
       csvContent += `"${csvEscape(month)}","${csvEscape(name)}","${csvEscape(date)}","${csvEscape(products)}","${csvEscape(notes)}","${csvEscape(colorName)}"\n`;
     });
@@ -772,7 +793,7 @@ function applyConfig(config) {
   document.body.style.background = c.background_color;
   document.getElementById('calTitle').textContent = c.calendar_title;
   document.getElementById('calTitle').style.color = c.primary_action_color;
-  document.getElementById('calTitle').style.fontFamily = `${c.font_family}, 'Playfair Display', serif`;
+  document.getElementById('calTitle').style.fontFamily = `${c.font_family}, 'Metropolis', Arial, sans-serif`;
   document.getElementById('taskCount').style.color = c.secondary_action_color;
   document.getElementById('taskCount').style.fontSize = `${c.font_size}px`;
   document.getElementById('calTitle').style.fontSize = `${c.font_size * 2.2}px`;
