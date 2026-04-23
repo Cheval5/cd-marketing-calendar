@@ -516,7 +516,7 @@
      <div class="brand-title-block">
       <h1 id="calTitle" style="font-family: 'Proxima Nova', 'Metropolis', Arial, sans-serif; font-size: 32px; font-weight: 700; color: #004E78;"></h1>
       <p id="taskCount" style="color: #4A4A49; font-size: 14px; margin-top: 4px;">0 campaigns</p>
-      <p style="color: #898989; font-size: 12px; margin-top: 4px;">Stored in this browser with localStorage</p>
+      <p style="color: #898989; font-size: 12px; margin-top: 4px;">Synced with Firebase Firestore, with local backup</p>
       <p id="lastSavedNote" style="color: #898989; font-size: 12px; margin-top: 4px;">Not saved yet</p>
      </div>
     </div>
@@ -710,9 +710,20 @@
    </div>
   </div><!-- Toast -->
   <div class="toast-msg" id="toast" style="background:#004E78;color:#fff;"></div>
+  <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore-compat.js"></script>
   <script>
 const STORAGE_KEY = 'marketing-calendar.tasks.v2';
 const LAST_SAVED_KEY = 'marketing-calendar.last-saved.v2';
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCW3LHbfqyaSfoTi7lq0QGuApGKlry7y-I",
+  authDomain: "cd-planning-tools.firebaseapp.com",
+  projectId: "cd-planning-tools",
+  storageBucket: "cd-planning-tools.firebasestorage.app",
+  messagingSenderId: "997238317053",
+  appId: "1:997238317053:web:502925ea322359cf63c394"
+};
+const FIRESTORE_COLLECTION = 'marketingCampaigns';
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const COLORS = ['#004E78','#25A046','#00A7E1','#898989','#4A4A49','#C4923F'];
 const STATUSES = ['Planned','In Progress','Approved','Completed','On Hold'];
@@ -736,11 +747,15 @@ let editColor = COLORS[0];
 let dragId = null;
 let deleteConfirmId = null;
 let pendingHighlightId = null;
+let firestoreDb = null;
+let firestoreUnsubscribe = null;
+let isFirestoreReady = false;
+let isApplyingRemoteSnapshot = false;
 
 function formatSavedTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return 'Not saved yet';
-  return `Last saved locally at ${date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
+  return `Last saved at ${date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
 }
 
 function setLastSavedNote(value) {
@@ -849,7 +864,7 @@ function loadTasksFromStorage() {
   }
 }
 
-function persistTasks() {
+function cacheTasksLocally() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
     const savedAt = new Date().toISOString();
@@ -863,8 +878,71 @@ function persistTasks() {
   }
 }
 
+function getFirestoreCollection() {
+  if (!firestoreDb) return null;
+  return firestoreDb.collection(FIRESTORE_COLLECTION);
+}
+
+function getFirestoreTaskPayload(task) {
+  const normalized = normalizeTask(task);
+  const { __backendId, ...payload } = normalized;
+  return {
+    ...payload,
+    updatedAt: new Date().toISOString()
+  };
+}
+
+async function saveTaskToFirestore(task) {
+  const collection = getFirestoreCollection();
+  if (!collection || !isFirestoreReady || isApplyingRemoteSnapshot) return;
+
+  try {
+    await collection.doc(task.__backendId).set(getFirestoreTaskPayload(task), { merge: true });
+  } catch (error) {
+    console.error('Failed to save campaign to Firestore:', error);
+    showToast('Saved locally only. Firestore unavailable.');
+  }
+}
+
+async function deleteTaskFromFirestore(taskId) {
+  const collection = getFirestoreCollection();
+  if (!collection || !isFirestoreReady || isApplyingRemoteSnapshot) return;
+
+  try {
+    await collection.doc(taskId).delete();
+  } catch (error) {
+    console.error('Failed to delete campaign from Firestore:', error);
+    showToast('Deleted locally only. Firestore unavailable.');
+  }
+}
+
+async function syncAllTasksToFirestore() {
+  const collection = getFirestoreCollection();
+  if (!collection || !isFirestoreReady || isApplyingRemoteSnapshot) return;
+
+  try {
+    const snapshot = await collection.get();
+    const batch = firestoreDb.batch();
+    snapshot.docs.forEach(doc => batch.delete(doc.ref));
+    allTasks.forEach(task => {
+      batch.set(collection.doc(task.__backendId), getFirestoreTaskPayload(task), { merge: true });
+    });
+    await batch.commit();
+  } catch (error) {
+    console.error('Failed to sync campaigns to Firestore:', error);
+    showToast('Saved locally only. Firestore sync failed.');
+  }
+}
+
+function persistTasks() {
+  const cached = cacheTasksLocally();
+  syncAllTasksToFirestore();
+  return cached;
+}
+
 function refreshTasks(tasks) {
   allTasks = tasks.map((task, index) => normalizeTask(task, index));
+  cacheTasksLocally();
   renderTasks();
 }
 
@@ -875,14 +953,16 @@ function upsertTask(updatedTask) {
     : [...allTasks, normalized];
 
   allTasks = nextTasks;
-  persistTasks();
+  cacheTasksLocally();
+  saveTaskToFirestore(normalized);
   renderTasks();
   return normalized;
 }
 
 function deleteTask(taskId) {
   allTasks = allTasks.filter(task => task.__backendId !== taskId);
-  persistTasks();
+  cacheTasksLocally();
+  deleteTaskFromFirestore(taskId);
   renderTasks();
 }
 
@@ -1692,6 +1772,57 @@ function importCalendar(event) {
   reader.readAsText(file);
 }
 
+function initializeFirestoreSync() {
+  if (!window.firebase || !firebase.apps) {
+    showToast('Firebase SDK not loaded. Using local data.');
+    return false;
+  }
+
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+
+    firestoreDb = firebase.firestore();
+    isFirestoreReady = true;
+
+    const collection = getFirestoreCollection();
+    firestoreUnsubscribe = collection.orderBy('order').onSnapshot(snapshot => {
+      isApplyingRemoteSnapshot = true;
+      const remoteTasks = snapshot.docs.map((doc, index) => normalizeTask({
+        __backendId: doc.id,
+        ...doc.data()
+      }, index));
+
+      if (remoteTasks.length) {
+        allTasks = remoteTasks;
+        cacheTasksLocally();
+        renderTasks();
+        setLastSavedNote(localStorage.getItem(LAST_SAVED_KEY));
+      } else if (allTasks.length) {
+        isApplyingRemoteSnapshot = false;
+        syncAllTasksToFirestore();
+      } else {
+        renderTasks();
+      }
+      isApplyingRemoteSnapshot = false;
+    }, error => {
+      isApplyingRemoteSnapshot = false;
+      console.error('Firestore live sync failed:', error);
+      isFirestoreReady = false;
+      showToast('Firestore unavailable. Using local data.');
+      refreshTasks(loadTasksFromStorage());
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+    isFirestoreReady = false;
+    showToast('Firebase setup failed. Using local data.');
+    return false;
+  }
+}
+
 // Apply config to UI
 function applyConfig(config) {
   const c = { ...defaultConfig, ...config };
@@ -1728,6 +1859,7 @@ function applyConfig(config) {
   setLastSavedNote(localStorage.getItem(LAST_SAVED_KEY));
   applyConfig(defaultConfig);
   refreshTasks(loadTasksFromStorage());
+  initializeFirestoreSync();
   lucide.createIcons();
 })();
 </script>
