@@ -348,6 +348,96 @@
     .quarter-panel { margin: 14px 16px 0; }
     .quarter-grid { grid-template-columns: 1fr; }
   }
+  .deleted-panel {
+    margin: 16px 32px 32px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 78, 120, 0.12);
+    background: #FFFFFF;
+    box-shadow: 0 8px 24px rgba(0, 78, 120, 0.05);
+  }
+  .deleted-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .deleted-heading { min-width: 0; }
+  .deleted-title {
+    color: var(--cd-regal-blue);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .deleted-subtitle {
+    color: var(--cd-grey);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .deleted-toggle {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 78, 120, 0.18);
+    background: var(--cd-light-grey);
+    color: var(--cd-regal-blue);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .deleted-panel.is-collapsed .deleted-list {
+    display: none;
+  }
+  .deleted-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .deleted-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 78, 120, 0.1);
+    background: var(--cd-light-grey);
+  }
+  .deleted-name {
+    color: var(--cd-regal-blue);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .deleted-meta {
+    margin-top: 3px;
+    color: var(--cd-grey);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .restore-btn {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: none;
+    background: var(--cd-classic-green);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .deleted-empty {
+    color: var(--cd-grey);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  @media (max-width: 620px) {
+    .deleted-panel { margin: 14px 16px 32px; }
+    .deleted-item { flex-direction: column; align-items: flex-start; }
+  }
 
   .month-col {
     min-height: 128px;
@@ -634,6 +724,16 @@
     </div>
     <div class="quarter-grid" id="quarterGrid"></div>
    </div>
+   <div class="deleted-panel is-collapsed">
+    <div class="deleted-header">
+     <div class="deleted-heading">
+      <div class="deleted-title">Recently Deleted</div>
+      <div class="deleted-subtitle" id="deletedSubtitle">Restore deleted campaigns</div>
+     </div>
+     <button class="deleted-toggle" type="button" id="deletedToggle" aria-expanded="false">Show</button>
+    </div>
+    <div class="deleted-list" id="deletedList"></div>
+   </div>
   </div><!-- Edit Modal -->
   <input id="importFile" type="file" accept=".csv,text/csv" onchange="importCalendar(event)" hidden>
   <div class="edit-overlay" id="editOverlay">
@@ -919,6 +1019,9 @@ function normalizeTask(task = {}, index = 0) {
     __backendId: String(task.__backendId ?? task.id ?? generateId()),
     month: normalizeMonthValue(task.month),
     order: Number.isFinite(orderValue) ? orderValue : Date.now() + index,
+    deleted: Boolean(task.deleted),
+    deletedAt: String(task.deletedAt ?? '').trim(),
+    deletedBy: String(task.deletedBy ?? '').trim(),
     color: typeof task.color === 'string' && task.color ? task.color : COLORS[0],
     date: String(task.date ?? '').trim(),
     status: Object.prototype.hasOwnProperty.call(task, 'status') ? normalizeStatus(task.status, STATUSES[0]) : STATUSES[0],
@@ -1032,6 +1135,16 @@ function refreshTasks(tasks) {
   renderTasks();
 }
 
+function getActiveTasks() {
+  return allTasks.filter(task => !task.deleted);
+}
+
+function getDeletedTasks() {
+  return allTasks
+    .filter(task => task.deleted)
+    .sort((a, b) => String(b.deletedAt || '').localeCompare(String(a.deletedAt || '')));
+}
+
 function upsertTask(updatedTask) {
   const normalized = normalizeTask(updatedTask);
   const nextTasks = allTasks.some(task => task.__backendId === normalized.__backendId)
@@ -1047,14 +1160,31 @@ function upsertTask(updatedTask) {
 
 function deleteTask(taskId) {
   if (!requireSignedIn('delete campaigns')) return;
-  allTasks = allTasks.filter(task => task.__backendId !== taskId);
-  cacheTasksLocally();
-  deleteTaskFromFirestore(taskId);
-  renderTasks();
+  const task = allTasks.find(item => item.__backendId === taskId);
+  if (!task) return;
+  upsertTask({
+    ...task,
+    deleted: true,
+    deletedAt: new Date().toISOString(),
+    deletedBy: currentUser?.email || currentUser?.uid || ''
+  });
+}
+
+function restoreTask(taskId) {
+  if (!requireSignedIn('restore campaigns')) return;
+  const task = allTasks.find(item => item.__backendId === taskId);
+  if (!task) return;
+  upsertTask({
+    ...task,
+    deleted: false,
+    deletedAt: '',
+    deletedBy: ''
+  });
+  showToast('Campaign restored');
 }
 
 function nextOrder(month) {
-  const monthTasks = allTasks.filter(task => task.month === month);
+  const monthTasks = getActiveTasks().filter(task => task.month === month);
   if (!monthTasks.length) return Date.now();
   return Math.max(...monthTasks.map(task => Number(task.order) || 0)) + 1;
 }
@@ -1065,7 +1195,7 @@ function initEditMonthOptions() {
 }
 
 function getCampaignTypeOptions(extraTypes = []) {
-  const usedTypes = allTasks.flatMap(task => normalizeCampaignTypes(task.campaignTypes ?? task.campaignType, []));
+  const usedTypes = getActiveTasks().flatMap(task => normalizeCampaignTypes(task.campaignTypes ?? task.campaignType, []));
   const options = [];
   [...CAMPAIGN_TYPES, ...usedTypes, ...extraTypes].forEach(type => {
     const value = String(type || '').trim();
@@ -1204,8 +1334,20 @@ function initQuarterToggle() {
   });
 }
 
+function initDeletedToggle() {
+  const panel = document.querySelector('.deleted-panel');
+  const toggle = document.getElementById('deletedToggle');
+  if (!panel || !toggle) return;
+
+  toggle.addEventListener('click', () => {
+    const isCollapsed = panel.classList.toggle('is-collapsed');
+    toggle.textContent = isCollapsed ? 'Show' : 'Hide';
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+  });
+}
+
 function updateOwnerFilterOptions() {
-  const owners = [...new Set(allTasks.map(task => String(task.owner || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const owners = [...new Set(getActiveTasks().map(task => String(task.owner || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
   setSelectOptions('ownerFilter', owners, 'All owners');
 }
 
@@ -1252,7 +1394,7 @@ function taskMatchesFilters(task, filters) {
 }
 
 function getVisibleTasks(filters = getFilterState()) {
-  return allTasks.filter(task => taskMatchesFilters(task, filters));
+  return getActiveTasks().filter(task => taskMatchesFilters(task, filters));
 }
 
 function getUpcomingTasks(tasks, limit = 5) {
@@ -1340,6 +1482,45 @@ function renderQuarterView(tasks, filtersActive) {
       </div>
     </div>
   `).join('');
+}
+
+function renderDeletedPanel() {
+  const list = document.getElementById('deletedList');
+  const subtitle = document.getElementById('deletedSubtitle');
+  if (!list || !subtitle) return;
+
+  const deletedTasks = getDeletedTasks();
+  subtitle.textContent = deletedTasks.length
+    ? `${deletedTasks.length} deleted campaign${deletedTasks.length === 1 ? '' : 's'} available to restore`
+    : 'Restore deleted campaigns';
+
+  list.innerHTML = '';
+  if (!deletedTasks.length) {
+    const empty = document.createElement('div');
+    empty.className = 'deleted-empty';
+    empty.textContent = 'No deleted campaigns.';
+    list.appendChild(empty);
+    return;
+  }
+
+  deletedTasks.slice(0, 10).forEach(task => {
+    const item = document.createElement('div');
+    item.className = 'deleted-item';
+    item.innerHTML = `
+      <div>
+        <div class="deleted-name">${escHtml(task.name || task.text || 'Campaign')}</div>
+        <div class="deleted-meta">
+          ${escHtml([
+            task.deletedAt ? `Deleted ${formatSavedTime(task.deletedAt).replace('Last saved at ', '')}` : '',
+            task.deletedBy ? `by ${task.deletedBy}` : ''
+          ].filter(Boolean).join(' '))}
+        </div>
+      </div>
+      <button class="restore-btn" type="button">Restore</button>
+    `;
+    item.querySelector('.restore-btn').addEventListener('click', () => restoreTask(task.__backendId));
+    list.appendChild(item);
+  });
 }
 
 function flashSavedTask(taskId) {
@@ -1521,8 +1702,10 @@ function renderTasks() {
   const filters = getFilterState();
   const visibleTasks = getVisibleTasks(filters);
   const filtersActive = hasActiveFilters(filters);
+  const activeTasks = getActiveTasks();
   renderUpcomingDeadlines(visibleTasks, filtersActive);
   renderQuarterView(visibleTasks, filtersActive);
+  renderDeletedPanel();
 
   document.querySelectorAll('.month-col').forEach(col => {
     const month = parseInt(col.dataset.month, 10);
@@ -1549,8 +1732,8 @@ function renderTasks() {
     });
   });
   document.getElementById('taskCount').textContent = filtersActive
-    ? `${visibleTasks.length} of ${allTasks.length} campaign${allTasks.length !== 1 ? 's' : ''} shown`
-    : `${allTasks.length} campaign${allTasks.length!==1?'s':''}`;
+    ? `${visibleTasks.length} of ${activeTasks.length} campaign${activeTasks.length !== 1 ? 's' : ''} shown`
+    : `${activeTasks.length} campaign${activeTasks.length!==1?'s':''}`;
 }
 
 function createCard(t) {
@@ -1593,7 +1776,7 @@ function showDeleteConfirm(card, t) {
     e.stopPropagation();
     bar.children[0].disabled = true; bar.children[0].textContent = '...';
     deleteTask(t.__backendId);
-    showToast('Campaign deleted');
+    showToast('Campaign moved to Recently Deleted');
     deleteConfirmId = null;
   });
   bar.children[1].addEventListener('click', e => { e.stopPropagation(); bar.remove(); deleteConfirmId = null; });
@@ -1701,7 +1884,7 @@ function buildCSV() {
   let csvContent = 'Month,Campaign Name,Date,Status,Priority,Owner,Budget,Campaign Types,Products,Notes,Category\n';
   
   MONTHS.forEach((month, idx) => {
-    const tasks = allTasks.filter(t => t.month === idx).sort((a,b) => a.order - b.order);
+    const tasks = getActiveTasks().filter(t => t.month === idx).sort((a,b) => a.order - b.order);
     tasks.forEach(t => {
       const name = t.name || '';
       const date = t.date || '';
@@ -1998,6 +2181,7 @@ function applyConfig(config) {
   initFilterToggle();
   initUpcomingToggle();
   initQuarterToggle();
+  initDeletedToggle();
   setLastSavedNote(localStorage.getItem(LAST_SAVED_KEY));
   applyConfig(defaultConfig);
   refreshTasks(loadTasksFromStorage());
