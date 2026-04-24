@@ -4,12 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marketing Calendar</title>
-  <meta http-equiv="refresh" content="0; url=./2026.html">
   <script>
-    window.location.replace('./2026.html');
+    const APP_VERSION = '20260424-3';
+    const targetUrl = './2026.html?v=' + APP_VERSION;
+    window.location.replace(targetUrl);
   </script>
 </head>
 <body>
-  <p>Redirecting to <a href="./2026.html">Marketing Calendar</a>...</p>
+  <p>Redirecting to <a id="redirectLink" href="./2026.html">Marketing Calendar</a>...</p>
+  <script>
+    document.getElementById('redirectLink').href = targetUrl;
+  </script>
 </body>
 </html>

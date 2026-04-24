@@ -6,13 +6,16 @@
   <title>Marketing Task Calendar</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="./styles.css">
+  <script>
+    window.APP_VERSION = '20260424-3';
+    document.write('<link rel="stylesheet" href="./styles.css?v=' + window.APP_VERSION + '">');
+  </script>
  </head>
 <body class="app-body h-full">
   <div id="app" class="app-shell h-full w-full"><!-- Header -->
    <div class="app-header">
     <div class="brand-lockup">
-     <img class="brand-logo" src="./assets/classic-displays-logo-colour-rgb.png" alt="Classic Displays">
+     <img class="brand-logo" id="brandLogo" src="./assets/classic-displays-logo-colour-rgb.png" alt="Classic Displays">
      <div class="brand-title-block">
       <h1 id="calTitle" class="app-title"></h1>
       <p id="taskCount" class="app-task-count">0 campaigns</p>
@@ -239,6 +242,9 @@
   <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore-compat.js"></script>
-  <script src="./app.js"></script>
+  <script>
+    document.getElementById('brandLogo').src = './assets/classic-displays-logo-colour-rgb.png?v=' + window.APP_VERSION;
+    document.write('<script src="./app.js?v=' + window.APP_VERSION + '"><\/script>');
+  </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f05e9e9b36e5413',t:'MTc3Njg3NDM4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
