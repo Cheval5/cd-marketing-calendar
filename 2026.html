@@ -997,6 +997,30 @@ function normalizeMonthValue(value) {
   return index >= 0 ? index : 0;
 }
 
+function getCalendarYear() {
+  const match = String(defaultConfig.calendar_title || '').match(/\b(20\d{2})\b/);
+  return match ? parseInt(match[1], 10) : new Date().getFullYear();
+}
+
+function getDefaultDateForMonth(month) {
+  const normalizedMonth = normalizeMonthValue(month);
+  return `${getCalendarYear()}-${String(normalizedMonth + 1).padStart(2, '0')}-01`;
+}
+
+function moveDateToMonth(value, month) {
+  if (!value) return getDefaultDateForMonth(month);
+  const parsed = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return getDefaultDateForMonth(month);
+
+  const year = parsed.getFullYear();
+  const targetMonth = normalizeMonthValue(month);
+  const day = parsed.getDate();
+  const maxDay = new Date(year, targetMonth + 1, 0).getDate();
+  const safeDay = Math.min(day, maxDay);
+
+  return `${year}-${String(targetMonth + 1).padStart(2, '0')}-${String(safeDay).padStart(2, '0')}`;
+}
+
 function normalizeStatus(value, fallback = '') {
   const raw = String(value ?? '').trim();
   if (!raw || raw.toLowerCase() === 'none') return '';
@@ -1678,7 +1702,12 @@ function buildGrid() {
       if (!requireSignedIn('reorder campaigns')) { dragId = null; return; }
       const task = allTasks.find(t => t.__backendId === dragId);
       if (task) {
-        upsertTask({ ...task, month: i, order: nextOrder(i) }, 'Moved');
+        upsertTask({
+          ...task,
+          month: i,
+          date: moveDateToMonth(task.date, i),
+          order: nextOrder(i)
+        }, 'Moved');
       }
       dragId = null;
     });
@@ -1804,7 +1833,7 @@ function openEdit(t) {
   
   // Ensure all values are strings and not undefined
   document.getElementById('editMonth').value = String(normalizeMonthValue(t.month));
-  document.getElementById('editDate').value = t.date ? String(t.date) : '';
+  document.getElementById('editDate').value = t.date ? String(t.date) : getDefaultDateForMonth(t.month);
   document.getElementById('editName').value = t.name ? String(t.name) : '';
   document.getElementById('editStatus').value = normalizeStatus(t.status);
   document.getElementById('editPriority').value = normalizePriority(t.priority);
