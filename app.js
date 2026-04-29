@@ -126,7 +126,11 @@ function getCalendarYear() {
 
 function getDefaultDateForMonth(month) {
   const normalizedMonth = normalizeMonthValue(month);
-  return `${getCalendarYear()}-${String(normalizedMonth + 1).padStart(2, '0')}-01`;
+  return formatDateInputValue(getCalendarYear(), normalizedMonth, 1);
+}
+
+function formatDateInputValue(year, month, day) {
+  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
 function moveDateToMonth(value, month) {
@@ -140,7 +144,20 @@ function moveDateToMonth(value, month) {
   const maxDay = new Date(year, targetMonth + 1, 0).getDate();
   const safeDay = Math.min(day, maxDay);
 
-  return `${year}-${String(targetMonth + 1).padStart(2, '0')}-${String(safeDay).padStart(2, '0')}`;
+  return formatDateInputValue(year, targetMonth, safeDay);
+}
+
+function getDateForSelectedMonth(value, month) {
+  const targetMonth = normalizeMonthValue(month);
+  if (!value) return getDefaultDateForMonth(targetMonth);
+
+  const parsed = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return getDefaultDateForMonth(targetMonth);
+  if (parsed.getMonth() === targetMonth) {
+    return formatDateInputValue(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  }
+
+  return moveDateToMonth(value, targetMonth);
 }
 
 function normalizeStatus(value, fallback = '') {
@@ -342,6 +359,20 @@ function nextOrder(month) {
 function initEditMonthOptions() {
   const select = document.getElementById('editMonth');
   select.innerHTML = MONTHS.map((month, index) => `<option value="${index}">${month}</option>`).join('');
+}
+
+function initEditDateControls() {
+  const monthSelect = document.getElementById('editMonth');
+  const dateInput = document.getElementById('editDate');
+  monthSelect.addEventListener('change', () => {
+    dateInput.value = getDateForSelectedMonth(dateInput.value, monthSelect.value);
+  });
+  dateInput.addEventListener('change', () => {
+    const parsed = new Date(`${dateInput.value}T00:00:00`);
+    if (!Number.isNaN(parsed.getTime())) {
+      monthSelect.value = String(parsed.getMonth());
+    }
+  });
 }
 
 function getCampaignTypeOptions(extraTypes = []) {
@@ -955,7 +986,7 @@ function openEdit(t) {
   
   // Ensure all values are strings and not undefined
   document.getElementById('editMonth').value = String(normalizeMonthValue(t.month));
-  document.getElementById('editDate').value = t.date ? String(t.date) : getDefaultDateForMonth(t.month);
+  document.getElementById('editDate').value = getDateForSelectedMonth(t.date, t.month);
   document.getElementById('editName').value = t.name ? String(t.name) : '';
   document.getElementById('editStatus').value = normalizeStatus(t.status);
   document.getElementById('editPriority').value = normalizePriority(t.priority);
@@ -1358,6 +1389,7 @@ function applyConfig(config) {
 (async () => {
   buildGrid();
   initEditMonthOptions();
+  initEditDateControls();
   initCampaignTypeCheckboxes();
   initFilterOptions();
   initFilterToggle();
